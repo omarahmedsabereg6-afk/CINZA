@@ -1,0 +1,101 @@
+<!-- RESULT (sections 14, 15) — cinematic hero, confidence, matched scene, watch options. -->
+<div class="result">
+  <div class="result__hero">
+    <div class="result__hero-fallback" aria-hidden="true"></div>
+    <img class="result__backdrop" id="result-backdrop" alt="" hidden />
+    <div class="result__gradient" aria-hidden="true"></div>
+
+    <div class="result__nav">
+      <button class="icon-btn" id="result-back" type="button" aria-label="Back">
+        <svg aria-hidden="true"><use href="#i-back" /></svg>
+      </button>
+      <div style="display: flex; gap: 8px">
+        <button class="icon-btn" id="result-share" type="button" aria-label="Share this result">
+          <svg aria-hidden="true"><use href="#i-share" /></svg>
+        </button>
+        <button class="icon-btn" id="result-more" type="button" aria-label="More options">
+          <svg aria-hidden="true"><use href="#i-info" /></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="result__body">
+    <div class="result__main">
+      <div class="result__poster" id="result-poster"></div>
+      <div class="result__headings">
+        <h1 class="result__title" id="result-title">—</h1>
+        <p class="result__original" id="result-original" hidden></p>
+        <div class="result__meta" id="result-meta"></div>
+      </div>
+    </div>
+
+    <!-- Honesty banners: simulated result, cached result, low confidence -->
+    <div id="result-notices" style="margin-top: 16px"></div>
+
+    <div class="result__confidence">
+      <div class="result__verdict">
+        <span class="pill" id="result-verdict">—</span>
+        <span class="t-meta" id="result-margin"></span>
+      </div>
+      <div class="confidence" id="result-confidence" data-verdict="uncertain">
+        <div class="confidence__bar"><div class="confidence__fill" id="result-confidence-fill"></div></div>
+        <span class="confidence__value" id="result-confidence-value">—</span>
+      </div>
+      <p class="t-meta" id="result-confidence-note" style="margin-top: 8px"></p>
+    </div>
+
+    <div class="result__actions">
+      <button class="btn btn--primary" id="result-watch" type="button">
+        <svg aria-hidden="true"><use href="#i-play" /></svg>
+        Watch
+      </button>
+      <button class="btn btn--secondary" id="result-save" type="button" aria-pressed="false">
+        <svg aria-hidden="true"><use href="#i-bookmark" /></svg>
+        Save
+      </button>
+      <button class="btn btn--secondary" id="result-details" type="button">Details</button>
+    </div>
+
+    <!-- Matched scene (section 15) -->
+    <section class="scene" aria-labelledby="scene-title">
+      <div class="section__head" style="padding: 0">
+        <h2 class="section__title" id="scene-title">Matched Scene</h2>
+      </div>
+      <div class="scene__compare" id="scene-compare"></div>
+      <div class="scene__facts" id="scene-facts"></div>
+    </section>
+
+    <!-- Where to Watch (section 17) -->
+    <section class="section" aria-labelledby="watch-title" id="watch-section">
+      <div class="section__head" style="padding: 0">
+        <h2 class="section__title" id="watch-title">Where to Watch</h2>
+      </div>
+      <div id="watch-body"></div>
+    </section>
+
+    <!-- Why this match — explainability -->
+    <section class="section" aria-labelledby="why-title">
+      <div class="section__head" style="padding: 0">
+        <h2 class="section__title" id="why-title">Why this match</h2>
+      </div>
+      <div id="result-why"></div>
+    </section>
+
+    <!-- Alternatives (section 13 — candidates are shown, not hidden) -->
+    <section class="alternatives" aria-labelledby="alt-title" id="alt-section" hidden>
+      <div class="section__head" style="padding: 0">
+        <h2 class="section__title" id="alt-title">Not quite?</h2>
+      </div>
+      <div id="result-alternatives"></div>
+    </section>
+
+    <!-- Feedback (section 29) -->
+    <section class="section" aria-labelledby="fb-title">
+      <div class="section__head" style="padding: 0">
+        <h2 class="section__title" id="fb-title">Is this right?</h2>
+      </div>
+      <div id="result-feedback"></div>
+    </section>
+  </div>
+</div>

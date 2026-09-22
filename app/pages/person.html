@@ -1,0 +1,40 @@
+<!-- PERSON DETAIL -->
+<div class="detail">
+  <div class="detail__hero">
+    <img class="detail__backdrop" id="person-backdrop" alt="" hidden />
+    <div class="detail__gradient" aria-hidden="true"></div>
+    <div class="detail__nav">
+      <button class="icon-btn" id="person-back" type="button" aria-label="Back">
+        <svg aria-hidden="true"><use href="#i-back" /></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="detail__body">
+    <div class="detail__main" style="align-items: flex-end;">
+      <div class="detail__poster person-page__avatar" id="person-profile"></div>
+      <div class="detail__titles">
+        <h1 class="detail__title" id="person-name">—</h1>
+        <div class="detail__meta" id="person-meta"></div>
+      </div>
+    </div>
+
+    <div id="person-notices" style="margin-top: 16px"></div>
+
+    <section class="section" aria-labelledby="person-bio-heading">
+      <div class="section__head" style="padding: 0">
+        <h2 class="section__title" id="person-bio-heading">Biography</h2>
+      </div>
+      <p class="detail__overview" id="person-bio"></p>
+    </section>
+
+    <div class="detail__facts" id="person-facts"></div>
+
+    <section class="section" aria-labelledby="filmography-title" id="filmography-section">
+      <div class="section__head" style="padding: 0">
+        <h2 class="section__title" id="filmography-title">Filmography</h2>
+      </div>
+      <div id="person-filmography"></div>
+    </section>
+  </div>
+</div>

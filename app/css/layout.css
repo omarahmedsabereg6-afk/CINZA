@@ -1,0 +1,316 @@
+/* ============================================================================
+   CINZA — app shell layout
+   Fixed header + scrollable view + fixed tab bar, all respecting safe areas so
+   the UI sits correctly under notches, Dynamic Island, status bars and the
+   Android gesture/home bar (section 5).
+   ========================================================================= */
+
+#app {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  max-width: var(--app-max-width);
+  margin: 0 auto;
+  background: var(--c-bg);
+}
+
+/* Soft cinematic ambience behind everything: a single warm bloom at the top,
+   never a colourful gradient wash. */
+#app::before {
+  content: '';
+  position: absolute;
+  top: -30%;
+  left: 50%;
+  width: 140%;
+  height: 70%;
+  transform: translateX(-50%);
+  background: radial-gradient(ellipse at center, rgba(200, 52, 43, 0.07), transparent 62%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ---------------------------------------------------------------------------
+   Header
+   --------------------------------------------------------------------------- */
+.app-header {
+  position: relative;
+  z-index: var(--z-header);
+  flex: 0 0 auto;
+  padding-top: var(--safe-top);
+  background: var(--c-header-glass);
+  backdrop-filter: var(--c-glass-blur);
+  -webkit-backdrop-filter: var(--c-glass-blur);
+  border-bottom: 1px solid var(--c-glass-border);
+}
+.app-header--solid {
+  background: var(--c-bg-elev);
+  border-bottom: 1px solid var(--c-line);
+}
+
+.app-header__bar {
+  height: var(--header-h);
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding: 0 var(--s-3);
+  padding-left: calc(var(--s-3) + var(--safe-left));
+  padding-right: calc(var(--s-3) + var(--safe-right));
+}
+
+.app-header__brand {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  min-width: 0;
+}
+
+.app-header__logo {
+  width: 28px;
+  height: 28px;
+  flex: 0 0 auto;
+}
+
+.app-header__name {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+}
+
+.app-header__title {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.app-header__spacer {
+  flex: 1 1 auto;
+}
+
+/* ---------------------------------------------------------------------------
+   View container — one scrollable region per screen
+   --------------------------------------------------------------------------- */
+.view-stack {
+  position: relative;
+  z-index: var(--z-content);
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.view {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+  scrollbar-width: none;
+
+  /* Bottom padding clears the tab bar plus the home indicator. */
+  padding-bottom: calc(var(--tabbar-h) + var(--safe-bottom) + var(--s-6));
+  padding-left: var(--safe-left);
+  padding-right: var(--safe-right);
+}
+.view::-webkit-scrollbar {
+  width: 0;
+}
+
+/* Screens that own the whole screen (camera, scanning) hide the tab bar. */
+.view--flush {
+  padding-bottom: 0;
+}
+
+.view__pad {
+  padding-left: var(--s-3);
+  padding-right: var(--s-3);
+}
+
+/* ---------------------------------------------------------------------------
+   Tab bar
+   --------------------------------------------------------------------------- */
+.tabbar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: var(--z-tabbar);
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  height: calc(var(--tabbar-h) + var(--safe-bottom));
+  padding-bottom: var(--safe-bottom);
+  background: var(--c-glass-bg);
+  backdrop-filter: var(--c-glass-blur);
+  -webkit-backdrop-filter: var(--c-glass-blur);
+  border-top: 1px solid var(--c-glass-border);
+  box-shadow: 0 -4px 28px rgba(0, 0, 0, 0.45);
+  transition: transform var(--dur-base) var(--ease-out), opacity var(--dur-base) var(--ease-out);
+}
+[data-theme='light'] .tabbar {
+  background: var(--c-glass-bg);
+}
+
+.tabbar[hidden] {
+  display: none;
+}
+
+.tabbar__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-height: 42px;
+  color: var(--c-text-3);
+  font-size: 10px;
+  font-weight: var(--fw-medium);
+  letter-spacing: 0.01em;
+  transition: color var(--dur-fast) var(--ease-out);
+  position: relative;
+}
+.tabbar__item svg {
+  width: 20px;
+  height: 20px;
+}
+.tabbar__item[aria-current='page'],
+.tabbar__item.is-active {
+  color: #ffffff;
+}
+.tabbar__item[aria-current='page'] svg,
+.tabbar__item.is-active svg {
+  color: var(--c-accent-hi);
+  filter: drop-shadow(0 0 6px rgba(226, 70, 59, 0.45));
+}
+.tabbar__item[aria-current='page']::after,
+.tabbar__item.is-active::after {
+  content: '';
+  position: absolute;
+  bottom: 3px;
+  width: 4px;
+  height: 4px;
+  border-radius: var(--r-full);
+  background: var(--c-accent-hi);
+  box-shadow: 0 0 8px var(--c-accent), 0 0 2px var(--c-accent-hi);
+}
+[data-theme='light'] .tabbar__item[aria-current='page'],
+[data-theme='light'] .tabbar__item.is-active {
+  color: var(--c-text);
+}
+.tabbar__item:active {
+  transform: scale(0.94);
+}
+.tabbar__item:active svg {
+  color: var(--c-accent-hi);
+}
+
+/* ---------------------------------------------------------------------------
+   Full-bleed screens (camera / scanning) — no chrome at all
+   --------------------------------------------------------------------------- */
+.fullscreen {
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-overlay);
+  background: #000;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---------------------------------------------------------------------------
+   Modal sheet + scrim
+   --------------------------------------------------------------------------- */
+.scrim {
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-sheet);
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  opacity: 0;
+  animation: fade-in var(--dur-base) var(--ease-out) forwards;
+}
+
+.sheet {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: calc(var(--z-sheet) + 1);
+  max-height: 86%;
+  display: flex;
+  flex-direction: column;
+  background: var(--c-bg-elev);
+  border-top-left-radius: var(--r-xl);
+  border-top-right-radius: var(--r-xl);
+  border-top: 1px solid var(--c-line);
+  box-shadow: var(--e-4);
+  padding-bottom: var(--safe-bottom);
+  animation: sheet-in var(--dur-slow) var(--ease-out);
+  will-change: transform;
+}
+.sheet__grabber {
+  width: 36px;
+  height: 4px;
+  border-radius: var(--r-full);
+  background: var(--c-line-strong);
+  margin: var(--s-3) auto var(--s-1);
+  flex: 0 0 auto;
+}
+.sheet__header {
+  padding: var(--s-3) var(--s-4) var(--s-2);
+  flex: 0 0 auto;
+}
+.sheet__title {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
+}
+.sheet__body {
+  padding: var(--s-2) var(--s-4) var(--s-4);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ---------------------------------------------------------------------------
+   Toasts
+   --------------------------------------------------------------------------- */
+#toast-region {
+  position: absolute;
+  left: var(--s-4);
+  right: var(--s-4);
+  bottom: calc(var(--tabbar-h) + var(--safe-bottom) + var(--s-3));
+  z-index: var(--z-toast);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  pointer-events: none;
+}
+#toast-region > * {
+  pointer-events: auto;
+}
+
+/* ---------------------------------------------------------------------------
+   Tablet / large viewport: centre the column and widen it a little. Layouts are
+   never fixed-pixel, so nothing breaks (section 38).
+   --------------------------------------------------------------------------- */
+@media (min-width: 620px) {
+  :root {
+    --app-max-width: 640px;
+  }
+  body {
+    background: #050607;
+  }
+  #app {
+    box-shadow: 0 0 0 1px var(--c-line), var(--e-4);
+  }
+}
+
+/* Landscape phones: reclaim vertical space. */
+@media (max-height: 480px) and (orientation: landscape) {
+  :root {
+    --tabbar-h: 48px;
+    --header-h: 44px;
+  }
+}

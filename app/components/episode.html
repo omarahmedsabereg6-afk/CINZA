@@ -1,0 +1,10 @@
+<!-- One episode in a season list. -->
+<button class="episode" data-role="episode" type="button">
+  <span class="episode__num">{{number}}</span>
+  <span class="episode__still" data-role="still" data-if="hasStill"></span>
+  <span class="episode__text">
+    <span class="episode__title">{{title}}</span>
+    <span class="episode__meta" data-if="meta">{{meta}}</span>
+    <span class="episode__overview" data-if="overview">{{overview}}</span>
+  </span>
+</button>

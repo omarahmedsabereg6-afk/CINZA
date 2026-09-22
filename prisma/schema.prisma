@@ -1,0 +1,442 @@
+// ============================================================================
+// CINZA — canonical database schema (PostgreSQL)
+//
+// Design constraints (important):
+//   * No enums, no scalar lists (String[]), no Json, no @db.* native types.
+//   * Reason: prisma/schema.dev.prisma is generated from this file by swapping
+//     only the datasource provider to `sqlite`, so local dev needs no Postgres
+//     server. Anything Postgres-only would break that guarantee.
+//   * Structured payloads therefore live in `String` columns and are (de)serialised
+//     through backend/src/utils/json.js. Every such column is suffixed `Json`.
+//   * "enum-like" columns are plain strings; the allowed values live in
+//     backend/src/database/constants.js and are validated with zod at the edge.
+// ============================================================================
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// ---------------------------------------------------------------------------
+// Identity
+// ---------------------------------------------------------------------------
+
+model User {
+  id                  String   @id @default(cuid())
+  email               String   @unique
+  passwordHash        String
+  displayName         String?
+  role                String   @default("user") // user | admin
+  region              String   @default("US") // ISO 3166-1 alpha-2, drives streaming availability
+  language            String   @default("en-US")
+  theme               String   @default("dark") // dark | system
+  notificationsEnabled Boolean @default(true)
+  privateEnabled      Boolean  @default(true) // section 40: keep history private to device unless enabled
+  avatarColor         String   @default("#C8342B")
+  lastLoginAt         DateTime?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  deletedAt           DateTime?
+
+  refreshTokens   RefreshToken[]
+  recognitions    Recognition[]
+  watchlist       WatchlistItem[]
+  searchHistory   SearchHistory[]
+  feedback        RecognitionFeedback[]
+  passwordResets  PasswordResetToken[]
+
+  @@index([createdAt])
+}
+
+model RefreshToken {
+  id        String    @id @default(cuid())
+  userId    String
+  tokenHash String    @unique
+  expiresAt DateTime
+  revokedAt DateTime?
+  userAgent String?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+/// Single-use, time-boxed password reset tokens. Only the SHA-256 hash is stored,
+/// so a database leak cannot be replayed against the API.
+model PasswordResetToken {
+  id        String    @id @default(cuid())
+  userId    String
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  requestIp String?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+// ---------------------------------------------------------------------------
+// Recognition
+// ---------------------------------------------------------------------------
+
+model Recognition {
+  id        String @id @default(cuid())
+  userId    String?
+
+  // image | video | describe
+  mode      String @default("image")
+  // pending | processing | completed | failed
+  status    String @default("pending")
+
+  // image | camera | gallery | video | text
+  source    String @default("gallery")
+
+  // sha256 of normalised input — used for result caching + duplicate AI-call avoidance (section 41)
+  inputHash String?
+
+  region    String @default("US")
+  language  String @default("en-US")
+
+  // ----- resolved result (denormalised so History renders without extra joins)
+  tmdbId         String?
+  mediaType      String? // movie | tv
+  title          String?
+  originalTitle  String?
+  year           Int?
+  posterPath     String?
+  backdropPath   String?
+  confidence     Float?
+  seasonNumber   Int?
+  episodeNumber  Int?
+  episodeTitle   String?
+
+  // ----- rich payloads (JSON strings)
+  resultJson     String?
+  sceneJson      String?
+  aiJson         String?
+  debugJson      String?
+
+  // ----- pipeline provenance & observability (section 41)
+  aiProvider     String?
+  tmdbProvider   String?
+  isMock         Boolean @default(false)
+  isCached       Boolean @default(false)
+  aiCalls        Int     @default(0)
+  tmdbCalls      Int     @default(0)
+  processingMs   Int?
+  errorCode      String?
+  errorMessage   String?
+
+  createdAt   DateTime  @default(now())
+  completedAt DateTime?
+
+  user       User?                  @relation(fields: [userId], references: [id], onDelete: SetNull)
+  images     RecognitionImage[]
+  candidates RecognitionCandidate[]
+  feedback   RecognitionFeedback[]
+
+  @@index([userId, createdAt])
+  @@index([inputHash])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model RecognitionImage {
+  id            String @id @default(cuid())
+  recognitionId String
+
+  // primary | frame | reference
+  kind      String  @default("primary")
+  sortOrder Int     @default(0)
+
+  mimeType  String
+  width     Int?
+  height    Int?
+  sizeBytes Int?
+
+  // Small compressed preview kept for History. Full-size uploads are NEVER persisted (section 40).
+  thumbDataUrl String?
+
+  // Perceptual fingerprints computed on-device (see app/js/services/image.js)
+  pHash String?
+  dHash String?
+  aHash String?
+
+  frameTimeMs Int?
+  createdAt   DateTime @default(now())
+
+  recognition Recognition @relation(fields: [recognitionId], references: [id], onDelete: Cascade)
+
+  @@index([recognitionId])
+}
+
+model RecognitionCandidate {
+  id            String @id @default(cuid())
+  recognitionId String
+
+  tmdbId    String
+  mediaType String
+  title     String
+  year      Int?
+  score     Float   @default(0)
+  rank      Int     @default(0)
+  // which datasource produced the candidate: ai_hint | tmdb_search | text | fingerprint
+  source    String  @default("tmdb_search")
+  breakdownJson String?
+
+  createdAt DateTime @default(now())
+
+  recognition Recognition @relation(fields: [recognitionId], references: [id], onDelete: Cascade)
+
+  @@index([recognitionId, rank])
+  @@unique([recognitionId, tmdbId, mediaType])
+}
+
+model RecognitionFeedback {
+  id            String  @id @default(cuid())
+  recognitionId String
+  userId        String?
+
+  correct           Boolean @default(true)
+  correctedTmdbId   String?
+  correctedTitle    String?
+  correctedMediaType String?
+  correctedSeason   Int?
+  correctedEpisode  Int?
+  comment           String?
+
+  createdAt DateTime @default(now())
+
+  recognition Recognition @relation(fields: [recognitionId], references: [id], onDelete: Cascade)
+  user        User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([recognitionId])
+}
+
+// ---------------------------------------------------------------------------
+// Catalog cache (TMDB mirror — keeps us inside rate limits, section 41)
+// ---------------------------------------------------------------------------
+
+model Movie {
+  id            String @id @default(cuid())
+  tmdbId        String @unique
+  title         String
+  originalTitle String?
+  overview      String?
+  posterPath    String?
+  backdropPath  String?
+  releaseDate   String?
+  year          Int?
+  runtime       Int?
+  voteAverage   Float?
+  popularity    Float?
+  genresJson    String?
+  castJson      String?
+  crewJson      String?
+  videosJson    String?
+  rawJson       String?
+  fetchedAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([year])
+}
+
+model TVSeries {
+  id             String @id @default(cuid())
+  tmdbId         String @unique
+  name           String
+  originalName   String?
+  overview       String?
+  posterPath     String?
+  backdropPath   String?
+  firstAirDate   String?
+  lastAirDate    String?
+  yearStart      Int?
+  yearEnd        Int?
+  numberOfSeasons  Int?
+  numberOfEpisodes Int?
+  voteAverage    Float?
+  popularity     Float?
+  status         String?
+  genresJson     String?
+  castJson       String?
+  crewJson       String?
+  seasonsJson    String?
+  rawJson        String?
+  fetchedAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  seasons TVSeason[]
+
+  @@index([yearStart])
+}
+
+model TVSeason {
+  id            String @id @default(cuid())
+  seriesId      String
+  tmdbId        String?
+  seasonNumber  Int
+  name          String?
+  overview      String?
+  posterPath    String?
+  airDate       String?
+  episodeCount  Int?
+  episodesJson  String?
+  fetchedAt     DateTime @default(now())
+
+  series   TVSeries    @relation(fields: [seriesId], references: [id], onDelete: Cascade)
+  episodes TVEpisode[]
+
+  @@unique([seriesId, seasonNumber])
+}
+
+model TVEpisode {
+  id            String @id @default(cuid())
+  seasonId      String
+  tmdbId        String?
+  episodeNumber Int
+  name          String?
+  overview      String?
+  stillPath     String?
+  airDate       String?
+  runtime       Int?
+  voteAverage   Float?
+  fetchedAt     DateTime @default(now())
+
+  season TVSeason @relation(fields: [seasonId], references: [id], onDelete: Cascade)
+
+  @@unique([seasonId, episodeNumber])
+}
+
+// ---------------------------------------------------------------------------
+// User content
+// ---------------------------------------------------------------------------
+
+model WatchlistItem {
+  id        String @id @default(cuid())
+  userId    String
+  mediaType String // movie | tv
+  tmdbId    String
+  title     String
+  posterPath String?
+  year      Int?
+  // Optional episode pointer for series, e.g. "S02E05". Empty string for whole titles
+  // (kept as "" rather than NULL so the composite unique below works on SQLite).
+  episodeRef String @default("")
+  note      String?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, mediaType, tmdbId, episodeRef])
+  @@index([userId, createdAt])
+}
+
+model SearchHistory {
+  id          String @id @default(cuid())
+  userId      String?
+  query       String
+  resultCount Int    @default(0)
+  region      String?
+  createdAt   DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@index([query])
+}
+
+model StreamingAvailability {
+  id        String @id @default(cuid())
+  tmdbId    String
+  mediaType String // movie | tv
+  region    String
+  providerKey  String
+  providerName String
+  providerLogoPath String?
+  // stream | rent | buy  (never fabricated — only written from a provider response)
+  category  String
+  deepLink  String?
+  priceText String?
+  quality   String?
+  displayPriority Int?
+  source    String  @default("tmdb")
+  isMock    Boolean @default(false)
+  fetchedAt DateTime @default(now())
+  expiresAt DateTime?
+
+  @@unique([tmdbId, mediaType, region, providerKey, category])
+  @@index([tmdbId, mediaType, region])
+}
+
+// ---------------------------------------------------------------------------
+// SceneMatcher index (section 31)
+//
+// Confirmed frame fingerprints. Starts local (a single instance) and is designed
+// to be swapped for image embeddings + a vector database without touching the
+// pipeline: see backend/src/recognition/sceneMatcher/index.js
+// ---------------------------------------------------------------------------
+
+model FrameFingerprint {
+  id        String @id @default(cuid())
+  tmdbId    String
+  mediaType String
+  seasonNumber  Int?
+  episodeNumber Int?
+  label     String?
+  pHash     String?
+  dHash     String?
+  aHash     String?
+  thumbDataUrl String?
+  recognitionsCount Int @default(1)
+  source    String @default("confirmed")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([tmdbId, mediaType])
+  @@index([pHash])
+}
+
+// ---------------------------------------------------------------------------
+// API cost / usage telemetry (section 41)
+// ---------------------------------------------------------------------------
+
+model ApiCallMetric {
+  id         String @id @default(cuid())
+  kind       String // ai | tmdb | streaming
+  provider   String
+  operation  String
+  status     Int?
+  ok         Boolean @default(true)
+  cacheHit   Boolean @default(false)
+  durationMs Int?
+  createdAt  DateTime @default(now())
+
+  @@index([kind, createdAt])
+  @@index([createdAt])
+}
+
+// ---------------------------------------------------------------------------
+// Result cache — avoids paying for the same image twice (section 41)
+// ---------------------------------------------------------------------------
+
+model RecognitionCache {
+  id        String @id @default(cuid())
+  inputHash String @unique
+  payload   String
+  isMock    Boolean @default(false)
+  hits      Int     @default(0)
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+
+  @@index([expiresAt])
+}

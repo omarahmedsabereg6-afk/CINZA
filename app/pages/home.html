@@ -1,0 +1,75 @@
+<!-- HOME (section 6) — the recognition button is the single visual focus. -->
+<div class="home">
+  <div class="home__intro">
+    <h1 class="home__question">What movie is this?</h1>
+    <p class="home__subtitle">Show us a scene and we&rsquo;ll find it.</p>
+  </div>
+
+  <!-- Recognition button -->
+  <div class="ca-wrap">
+    <span class="ca-ring" aria-hidden="true"></span>
+    <span class="ca-ring ca-ring--2" aria-hidden="true"></span>
+    <span class="ca-ring ca-ring--3" aria-hidden="true"></span>
+
+    <button class="ca-btn" id="recognize-btn" type="button" aria-label="Search by image" title="Search by image">
+      <svg class="ca-btn__icon" aria-hidden="true"><use href="#i-image-select" /></svg>
+    </button>
+  </div>
+
+  <!-- Search by Text action -->
+  <div class="home__actions">
+    <button class="action-tile action-tile--text" id="action-describe" type="button" aria-expanded="false" aria-controls="describe-panel" aria-label="Search by text description">
+      <svg aria-hidden="true"><use href="#i-text" /></svg>
+      <span class="action-tile__label">Search by Text</span>
+    </button>
+  </div>
+
+  <!-- Describe the scene panel -->
+  <div class="describe">
+    <div class="describe__panel" id="describe-panel" hidden>
+      <div class="describe__header">
+        <span class="describe__heading">Describe the scene</span>
+        <button type="button" id="describe-close" class="describe__close" aria-label="Close text description">
+          <svg aria-hidden="true"><use href="#i-close" /></svg>
+        </button>
+      </div>
+      <label class="visually-hidden" for="describe-input">Describe the scene</label>
+      <textarea
+        class="field field--area"
+        id="describe-input"
+        maxlength="1200"
+        rows="4"
+        placeholder="E.g. a man in a yellow hazmat suit in the desert, an old RV parked behind him"
+      ></textarea>
+      <div class="describe__hint">
+        Used together with an image, or on its own. Descriptions drive the strongest results when they mention costume,
+        location, props or dialogue.
+      </div>
+      <button class="btn btn--secondary btn--block" id="describe-submit" type="button" style="margin-top: 12px">
+        <svg aria-hidden="true"><use href="#i-sparkle" /></svg>
+        Identify from description
+      </button>
+    </div>
+  </div>
+
+  <!-- Mock-mode disclosure, injected by the screen when a provider is simulated -->
+  <div id="home-notice" style="width: 100%; margin-top: 20px"></div>
+
+  <!-- Recently recognised on this device -->
+  <section class="home__recent" id="home-recent" hidden aria-labelledby="home-recent-title">
+    <div class="section__head" style="padding: 0">
+      <h2 class="section__title" id="home-recent-title">Recent</h2>
+      <a class="t-meta" href="#/history">See all</a>
+    </div>
+    <div class="recent-strip" id="home-recent-track"></div>
+  </section>
+
+  <!-- Genre & Sort selector -->
+  <section class="home__genres" id="home-genres-section" aria-label="Browse and filter catalog">
+    <div class="genre-strip" id="home-genres" role="tablist" aria-label="Filter by genre"></div>
+    <div class="sort-strip" id="home-sorts" role="toolbar" aria-label="Sort titles"></div>
+  </section>
+
+  <!-- Popular titles (rails). Hidden until data arrives so there is no empty box. -->
+  <div id="home-rails" style="width: 100%"></div>
+</div>

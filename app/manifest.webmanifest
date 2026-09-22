@@ -1,0 +1,20 @@
+{
+  "name": "CINZA",
+  "short_name": "CINZA",
+  "description": "What movie is this? Show us a scene and we'll find it.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#08090B",
+  "theme_color": "#08090B",
+  "lang": "en",
+  "categories": ["entertainment", "utilities"],
+  "icons": [
+    {
+      "src": "assets/img/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

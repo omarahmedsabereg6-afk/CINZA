@@ -1,0 +1,79 @@
+<!-- PREVIEW (sections 8, 9) + SCANNING (sections 10, 25) in one screen, because
+     the scanning overlay lives on top of the preview it is analysing. -->
+<div class="preview">
+  <div class="preview__top">
+    <button class="icon-btn" id="preview-back" type="button" aria-label="Go back">
+      <svg aria-hidden="true"><use href="#i-back" /></svg>
+    </button>
+    <button class="icon-btn" id="preview-clear" type="button" aria-label="Discard this image">
+      <svg aria-hidden="true"><use href="#i-trash" /></svg>
+    </button>
+  </div>
+
+  <div class="preview__stage">
+    <img class="preview__img" id="preview-image" alt="The scene you selected" />
+  </div>
+
+  <div class="preview__bottom" id="preview-bottom">
+    <div class="preview__meta">
+      <span id="preview-dimensions">—</span>
+      <span aria-hidden="true">·</span>
+      <span id="preview-filesize">—</span>
+      <span aria-hidden="true">·</span>
+      <span id="preview-type">—</span>
+    </div>
+
+    <div class="preview__frames" id="preview-frames"></div>
+
+    <div class="preview__actions">
+      <button class="btn btn--ghost" id="preview-change" type="button">Change</button>
+      <button class="btn btn--primary" id="preview-recognize" type="button">
+        <svg aria-hidden="true"><use href="#i-cinza-mark" /></svg>
+        Recognise
+      </button>
+    </div>
+
+    <p class="t-meta" id="preview-note" style="text-align: center"></p>
+  </div>
+
+  <!-- Scanning overlay -->
+  <div class="scanning" id="scanning" hidden role="status" aria-live="polite">
+    <div class="scanning__frame">
+      <img class="scanning__img" id="scanning-image" alt="" />
+      <div class="scanning__grid" aria-hidden="true"></div>
+      <div class="scanning__line" aria-hidden="true"></div>
+      <svg class="scanning__brackets" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+        <path
+          d="M4 18V6h12M84 6h12v12M96 82v12H84M16 94H4V82"
+          fill="none"
+          stroke="var(--c-accent-hi)"
+          stroke-width="1.6"
+          stroke-linecap="round"
+          vector-effect="non-scaling-stroke"
+        />
+      </svg>
+    </div>
+
+    <div class="scanning__status">
+      <p class="scanning__title">Analysing the scene</p>
+      <p class="scanning__step" id="scanning-step">Preparing image…</p>
+    </div>
+
+    <div class="scanning__progress" aria-hidden="true"></div>
+
+    <button class="btn btn--ghost scanning__cancel" id="scanning-cancel" type="button">Cancel</button>
+  </div>
+
+  <!-- Failure state (offline / timeout / recognition failure / no match) -->
+  <div class="scanning" id="preview-error" hidden>
+    <svg class="empty__art" aria-hidden="true"><use href="#i-warning" /></svg>
+    <div class="scanning__status">
+      <p class="scanning__title" id="preview-error-title">Something went wrong</p>
+      <p class="scanning__step" id="preview-error-text"></p>
+    </div>
+    <div class="empty__actions">
+      <button class="btn btn--primary" id="preview-retry" type="button">Try again</button>
+      <button class="btn btn--ghost" id="preview-error-back" type="button">Back</button>
+    </div>
+  </div>
+</div>

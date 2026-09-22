@@ -1,0 +1,276 @@
+/* ============================================================================
+   CINZA — base layer
+   Reset + native-feeling behaviour for a webview that must not feel like a
+   website squeezed into a phone (section 5).
+   ========================================================================= */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  /* dvh keeps the layout correct when mobile browser chrome collapses */
+  height: 100%;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  min-height: 100%;
+  min-height: 100dvh;
+  background: var(--c-bg);
+  color: var(--c-text);
+  font-family: var(--font-ui);
+  font-size: var(--fs-base);
+  line-height: var(--lh-normal);
+  font-weight: var(--fw-regular);
+
+  /* Native app feel: no rubber-band page scroll behind the fixed chrome, no
+     blue tap flashes, no accidental text selection on chrome elements. */
+  overscroll-behavior-y: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+
+  /* 100dvh + this prevents the classic iOS keyboard/scroll jank */
+  overflow: hidden;
+  position: fixed;
+  inset: 0;
+}
+
+/* Text is selectable only where it is genuinely useful (selectable class),
+   which is how native apps behave: chrome is not selectable, content is. */
+body {
+  user-select: none;
+  -webkit-user-select: none;
+}
+.selectable,
+input,
+textarea {
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+button {
+  cursor: pointer;
+  background: none;
+  color: inherit;
+  /* Keep the UA default of CENTRED button text.
+     `inherit` looked harmless but it overrides that default, so every button that
+     does not opt into flex centring silently got left-aligned text — which is
+     exactly what mis-aligned the segmented controls on Search and Watchlist.
+     Components that genuinely want left-aligned content (.poster-card, .list-row,
+     .media-row, .history-item, .episode) already declare `text-align: left`. */
+  text-align: center;
+}
+button:disabled {
+  cursor: default;
+}
+
+a {
+  color: var(--c-accent-hi);
+  text-decoration: none;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: var(--fw-semibold);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tracking-tight);
+}
+
+/* ---------------------------------------------------------------------------
+   [hidden] must always win.
+
+   A layout class such as `.scanning { display: flex }` has higher specificity than
+   the user-agent's `[hidden] { display: none }`, which means an element marked
+   hidden still renders AND still swallows taps over everything beneath it. That
+   silent failure is why this rule is global and !important rather than fixed
+   class-by-class.
+   --------------------------------------------------------------------------- */
+[hidden] {
+  display: none !important;
+}
+
+/* ---------------------------------------------------------------------------
+   Focus: visible for keyboards, suppressed for touch. Never remove focus rings
+   outright (section 39).
+   --------------------------------------------------------------------------- */
+:focus {
+  outline: none;
+}
+:focus-visible {
+  outline: 2px solid var(--c-accent-hi);
+  outline-offset: 2px;
+  /* No border-radius here: `outline` already follows the element's own radius, and
+     setting it here OVERWROTE the element's real radius (e.g. a 10px segment pill
+     snapped to 6px) for as long as it was focused. */
+}
+
+/* ---------------------------------------------------------------------------
+   Scroll areas
+   --------------------------------------------------------------------------- */
+.scroll-y {
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+  scrollbar-width: none;
+}
+.scroll-y::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+.scroll-x {
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x proximity;
+  scrollbar-width: none;
+}
+.scroll-x::-webkit-scrollbar {
+  height: 0;
+}
+.scroll-x > * {
+  scroll-snap-align: start;
+}
+
+/* ---------------------------------------------------------------------------
+   Accessibility helpers
+   --------------------------------------------------------------------------- */
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Skip link: only visible once focused. */
+.skip-link {
+  position: fixed;
+  top: calc(var(--safe-top) + var(--s-2));
+  left: 50%;
+  transform: translate(-50%, -200%);
+  z-index: var(--z-toast);
+  padding: var(--s-2) var(--s-4);
+  background: var(--c-accent);
+  color: #fff;
+  border-radius: var(--r-full);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  transition: transform var(--dur-base) var(--ease-out);
+}
+.skip-link:focus {
+  transform: translate(-50%, 0);
+}
+
+/* Screen-reader-only live region for route + status announcements. */
+#a11y-live {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+/* ---------------------------------------------------------------------------
+   Text primitives
+   --------------------------------------------------------------------------- */
+.t-hero {
+  font-size: var(--fs-2xl);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--lh-tight);
+}
+.t-title {
+  font-size: var(--fs-xl);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tracking-tight);
+}
+.t-heading {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-semibold);
+}
+.t-body {
+  font-size: var(--fs-base);
+  color: var(--c-text-2);
+  line-height: var(--lh-normal);
+}
+.t-label {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--c-text-3);
+}
+.t-meta {
+  font-size: var(--fs-sm);
+  color: var(--c-text-3);
+}
+.t-mono {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  letter-spacing: 0.02em;
+}
+.t-accent {
+  color: var(--c-accent-hi);
+}
+.t-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.t-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}

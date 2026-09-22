@@ -1,0 +1,148 @@
+/* ============================================================================
+   CINZA — animations
+   Only transform/opacity are animated so compositing stays on the GPU. Nothing
+   here is longer than ~600ms, and everything collapses under reduce-motion
+   (see tokens.css). Do not over-animate (section 25).
+   ========================================================================= */
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes sheet-in {
+  from { transform: translateY(100%); }
+  to { transform: none; }
+}
+
+@keyframes sheet-out {
+  from { transform: none; }
+  to { transform: translateY(100%); }
+}
+
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.92); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes shimmer {
+  0% { background-position: 100% 50%; }
+  100% { background-position: 0 50%; }
+}
+
+/* ---------------------------------------------------------------------------
+   The recognition button: a slow, breath-like pulse plus a soft glow. Kept
+   subtle on purpose — this is the one element that is allowed to be alive.
+   --------------------------------------------------------------------------- */
+@keyframes ca-pulse {
+  0%   { transform: scale(1);    opacity: 0.45; }
+  50%  { transform: scale(1.08); opacity: 0.12; }
+  100% { transform: scale(1);    opacity: 0.45; }
+}
+
+@keyframes ca-glow {
+  0%, 100% {
+    box-shadow: 0 0 24px rgba(200, 52, 43, 0.32), 0 0 52px rgba(200, 52, 43, 0.16), inset 0 0 16px rgba(226, 70, 59, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 46px rgba(226, 70, 59, 0.65), 0 0 86px rgba(200, 52, 43, 0.32), inset 0 0 26px rgba(226, 70, 59, 0.35);
+  }
+}
+
+/* Aperture blades rotate very slowly: reads as "lens is open and ready". */
+@keyframes ca-aperture {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* ---------------------------------------------------------------------------
+   Scanning: the sweep line across the preview, plus a vertical light drift.
+   --------------------------------------------------------------------------- */
+@keyframes ca-scan-line {
+  0%   { top: -26%; opacity: 0; }
+  6%   { opacity: 1; }
+  94%  { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+
+@keyframes ca-scan-glow {
+  0%, 100% { opacity: 0.35; }
+  50%      { opacity: 0.85; }
+}
+
+@keyframes ca-bracket {
+  0%, 100% { transform: scale(1); opacity: 0.55; }
+  50%      { transform: scale(1.05); opacity: 1; }
+}
+
+/* Progress bar with an indeterminate travelling sheen. */
+@keyframes ca-indeterminate {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(320%); }
+}
+
+/* ---------------------------------------------------------------------------
+   Haptics-style micro feedback for list actions
+   --------------------------------------------------------------------------- */
+@keyframes ca-nudge {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+/* ---------------------------------------------------------------------------
+   Utility animation classes
+   --------------------------------------------------------------------------- */
+.anim-rise {
+  animation: rise-in var(--dur-slow) var(--ease-out) both;
+}
+.anim-fade {
+  animation: fade-in var(--dur-base) var(--ease-out) both;
+}
+.anim-scale {
+  animation: scale-in var(--dur-slow) var(--ease-out) both;
+}
+.anim-nudge {
+  animation: ca-nudge 280ms var(--ease-spring);
+}
+
+/* Staggered entrance for lists: driven by --i set in JS, capped so long lists
+   do not end up with a 3-second cascade. */
+.stagger > * {
+  animation: rise-in var(--dur-slow) var(--ease-out) both;
+  animation-delay: calc(min(var(--i, 0), 8) * 38ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .anim-rise,
+  .anim-fade,
+  .anim-scale,
+  .stagger > * {
+    animation: none;
+  }
+  /* Keep a non-animated directional cue rather than removing the state change. */
+  .scanning__line {
+    animation: none;
+    top: 50%;
+    opacity: 0.8;
+  }
+}

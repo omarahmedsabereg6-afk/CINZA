@@ -1,0 +1,17 @@
+<!-- One history entry. -->
+<div class="history-item" data-role="history-item">
+  <span class="history-item__art" data-role="art"></span>
+  <span class="history-item__body">
+    <span class="history-item__title">{{title}}</span>
+    <span class="history-item__meta">
+      <span data-if="meta">{{meta}}</span>
+      <span class="pill pill--uncertain" data-if="badge">{{badge}}</span>
+    </span>
+  </span>
+  <span class="history-item__right">
+    <span class="history-item__confidence" data-if="confidence">{{confidence}}</span>
+    <button class="icon-btn icon-btn--plain" data-role="delete" type="button" aria-label="Delete this entry">
+      <svg aria-hidden="true"><use href="#i-trash" /></svg>
+    </button>
+  </span>
+</div>

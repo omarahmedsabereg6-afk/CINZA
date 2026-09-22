@@ -1,0 +1,42 @@
+{
+  "appId": "app.cinza.mobile",
+  "appName": "CINZA",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https",
+    "iosScheme": "capacitor"
+  },
+  "android": {
+    "backgroundColor": "#08090B",
+    "allowMixedContent": false,
+    "captureInput": true,
+    "webContentsDebuggingEnabled": true
+  },
+  "ios": {
+    "backgroundColor": "#08090B",
+    "contentInset": "always",
+    "scrollEnabled": true,
+    "limitsNavigationsToAppBoundDomains": false
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 700,
+      "launchAutoHide": true,
+      "backgroundColor": "#08090BFF",
+      "androidScaleType": "CENTER_CROP",
+      "showSpinner": false,
+      "splashFullScreen": true,
+      "splashImmersive": true
+    },
+    "Camera": {
+      "androidPermissions": ["android.permission.CAMERA"]
+    },
+    "StatusBar": {
+      "style": "DARK",
+      "backgroundColor": "#08090B"
+    },
+    "Keyboard": {
+      "resize": "body"
+    }
+  }
+}

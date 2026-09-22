@@ -1,0 +1,48 @@
+<!-- CAMERA (section 7) — full-screen live preview with capture chrome. -->
+<div class="camera">
+  <video class="camera__preview" id="camera-video" playsinline autoplay muted aria-label="Camera preview"></video>
+
+  <!-- Shown when getUserMedia is unavailable (desktop testing, permission denied,
+       or a webview without camera access). Never a dead screen. -->
+  <div class="camera__fallback" id="camera-fallback" hidden>
+    <div>
+      <svg width="46" height="46" style="margin: 0 auto 14px; color: var(--c-text-3)" aria-hidden="true">
+        <use href="#i-camera" />
+      </svg>
+      <p class="t-heading" id="camera-fallback-title">Camera unavailable</p>
+      <p class="t-body" id="camera-fallback-text" style="margin-top: 8px">
+        Live preview is not available here. You can still import a screenshot from your photo library.
+      </p>
+      <div style="display: flex; gap: 8px; justify-content: center; margin-top: 18px; flex-wrap: wrap">
+        <button class="btn btn--primary" id="camera-fallback-gallery" type="button">
+          <svg aria-hidden="true"><use href="#i-gallery" /></svg>
+          Choose from library
+        </button>
+        <button class="btn btn--ghost" id="camera-fallback-file" type="button">Use a file</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="camera__top">
+    <button class="icon-btn" id="camera-close" type="button" aria-label="Close camera">
+      <svg aria-hidden="true"><use href="#i-close" /></svg>
+    </button>
+    <button class="icon-btn" id="camera-flash" type="button" aria-label="Toggle flash" aria-pressed="false">
+      <svg aria-hidden="true"><use href="#i-flash-off" /></svg>
+    </button>
+  </div>
+
+  <p class="camera__hint" id="camera-hint">Frame a paused scene, a poster or a screenshot on another screen.</p>
+
+  <div class="camera__bottom">
+    <button class="icon-btn" id="camera-library" type="button" aria-label="Open photo library">
+      <svg aria-hidden="true"><use href="#i-gallery" /></svg>
+    </button>
+
+    <button class="camera__shutter" id="camera-shutter" type="button" aria-label="Capture photo"></button>
+
+    <button class="icon-btn" id="camera-switch" type="button" aria-label="Switch camera">
+      <svg aria-hidden="true"><use href="#i-switch-camera" /></svg>
+    </button>
+  </div>
+</div>

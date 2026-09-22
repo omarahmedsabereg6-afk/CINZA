@@ -1,0 +1,51 @@
+<!-- SEARCH (section 20) -->
+<div class="search-header">
+  <div class="searchbar-wrap">
+    <div class="searchbar">
+      <button class="searchbar__icon-btn" id="search-icon-btn" type="button" aria-label="Search History" title="Search History">
+        <svg aria-hidden="true"><use href="#i-search" /></svg>
+      </button>
+      <label class="visually-hidden" for="search-input">Search movies, series, actors or directors</label>
+      <input
+        id="search-input"
+        type="search"
+        inputmode="search"
+        enterkeyhint="search"
+        autocomplete="off"
+        autocorrect="off"
+        spellcheck="false"
+        placeholder="Movies, series, actors, directors"
+      />
+      <button class="searchbar__clear" id="search-clear" type="button" aria-label="Clear search" hidden>&times;</button>
+    </div>
+    <button class="searchbar__cancel" id="search-cancel" type="button" hidden>Cancel</button>
+  </div>
+
+  <div class="segment search-tabs" id="search-tabs" role="tablist" aria-label="Search scope">
+    <button class="segment__item" role="tab" data-type="all" aria-selected="true">All</button>
+    <button class="segment__item" role="tab" data-type="movie" aria-selected="false">Movies</button>
+    <button class="segment__item" role="tab" data-type="tv" aria-selected="false">Series</button>
+    <button class="segment__item" role="tab" data-type="person" aria-selected="false">People</button>
+  </div>
+</div>
+
+<div class="view__pad" id="search-body">
+  <!-- idle state: recent searches + suggestions -->
+  <section id="search-idle">
+    <div class="search-group" id="search-recent-group" hidden>
+      <div class="section__head" style="padding: 0; margin-bottom: 8px">
+        <h2 class="search-group__label" style="margin: 0">Search History</h2>
+        <button class="t-meta" id="search-recent-clear" type="button">Clear</button>
+      </div>
+      <div id="search-recent"></div>
+    </div>
+
+    <div class="search-group" id="search-browse-group">
+      <h2 class="search-group__label">Browse</h2>
+      <div id="search-browse"></div>
+    </div>
+  </section>
+
+  <!-- results -->
+  <section id="search-results" hidden></section>
+</div>

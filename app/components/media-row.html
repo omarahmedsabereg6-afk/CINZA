@@ -1,0 +1,9 @@
+<!-- Horizontal row item: artwork + title + meta + optional trailing slot. -->
+<button class="media-row" data-role="media-row" type="button">
+  <span class="media-row__art" data-role="art"></span>
+  <span class="media-row__text">
+    <span class="media-row__title">{{title}}</span>
+    <span class="media-row__meta" data-if="meta">{{meta}}</span>
+  </span>
+  <span class="media-row__trailing" data-role="trailing"></span>
+</button>

@@ -1,0 +1,70 @@
+<!-- AUTH (section 22) — one partial, three modes (login / register / forgot). -->
+<div class="auth">
+  <div class="auth__brand">
+    <svg class="auth__logo" aria-hidden="true"><use href="#i-cinza-mark" /></svg>
+    <h1 class="auth__title" id="auth-title">Welcome back</h1>
+    <p class="auth__text" id="auth-subtitle">Sign in to sync your history and watchlist across devices.</p>
+  </div>
+
+  <form class="auth__form" id="auth-form" novalidate>
+    <div class="field-group" id="auth-name-group" hidden>
+      <label class="field-label" for="auth-name">Display name</label>
+      <input class="field" id="auth-name" name="displayName" type="text" autocomplete="name" maxlength="60" />
+    </div>
+
+    <div class="field-group">
+      <label class="field-label" for="auth-email">Email</label>
+      <input
+        class="field"
+        id="auth-email"
+        name="email"
+        type="email"
+        inputmode="email"
+        autocomplete="email"
+        autocapitalize="off"
+        autocorrect="off"
+        spellcheck="false"
+        required
+      />
+    </div>
+
+    <div class="field-group" id="auth-password-group">
+      <label class="field-label" for="auth-password">Password</label>
+      <input
+        class="field"
+        id="auth-password"
+        name="password"
+        type="password"
+        autocomplete="current-password"
+        minlength="8"
+        required
+      />
+      <p class="t-meta" id="auth-password-hint" style="margin-top: 6px" hidden>
+        At least 8 characters, including a letter and a number.
+      </p>
+    </div>
+
+    <div id="auth-error"></div>
+
+    <button class="btn btn--primary btn--lg btn--block" id="auth-submit" type="submit">
+      <span id="auth-submit-label">Sign in</span>
+    </button>
+
+    <button class="auth__forgot" id="auth-forgot" type="button">Forgot password?</button>
+  </form>
+
+  <div class="auth__switch">
+    <span id="auth-switch-text">No account yet?</span>
+    <button class="auth__link" id="auth-switch" type="button">Create one</button>
+  </div>
+
+  <div style="margin-top: 20px">
+    <button class="btn btn--ghost btn--block" id="auth-skip" type="button">Continue without an account</button>
+    <p class="t-meta" style="margin-top: 10px; text-align: center">
+      Recognition works without an account. History then stays on this device only.
+    </p>
+  </div>
+
+  <!-- Development-only reset link surface (no email provider configured) -->
+  <div id="auth-reset-dev" style="margin-top: 18px"></div>
+</div>

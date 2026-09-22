@@ -1,0 +1,74 @@
+<!-- DETAIL (sections 15, 16) — movies and TV series, including season/episode lists. -->
+<div class="detail">
+  <div class="detail__hero">
+    <img class="detail__backdrop" id="detail-backdrop" alt="" hidden />
+    <div class="detail__gradient" aria-hidden="true"></div>
+    <div class="detail__nav">
+      <button class="icon-btn" id="detail-back" type="button" aria-label="Back">
+        <svg aria-hidden="true"><use href="#i-back" /></svg>
+      </button>
+      <button class="icon-btn" id="detail-share" type="button" aria-label="Share">
+        <svg aria-hidden="true"><use href="#i-share" /></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="detail__body">
+    <div class="detail__main">
+      <div class="detail__poster" id="detail-poster"></div>
+      <div class="detail__titles">
+        <h1 class="detail__title" id="detail-title">—</h1>
+        <div class="detail__meta" id="detail-meta"></div>
+      </div>
+    </div>
+
+    <div id="detail-notices" style="margin-top: 16px"></div>
+
+    <div class="detail__actions">
+      <button class="btn btn--primary" id="detail-watch" type="button">
+        <svg aria-hidden="true"><use href="#i-play" /></svg>
+        Where to Watch
+      </button>
+      <button class="btn btn--secondary" id="detail-save" type="button" aria-pressed="false">
+        <svg aria-hidden="true"><use href="#i-bookmark" /></svg>
+        Save
+      </button>
+    </div>
+
+    <p class="detail__overview" id="detail-overview"></p>
+    <button class="detail__readmore" id="detail-readmore" type="button" hidden>Read more</button>
+
+    <div class="detail__facts" id="detail-facts"></div>
+
+    <section class="section" aria-labelledby="detail-cast-title" id="detail-cast-section">
+      <div class="section__head" style="padding: 0">
+        <h2 class="section__title" id="detail-cast-title">Cast &amp; Characters</h2>
+      </div>
+      <div class="person-row" id="detail-cast"></div>
+    </section>
+
+    <section class="section" aria-labelledby="detail-similar-title" id="detail-similar-section" hidden>
+      <div class="section__head" style="padding: 0">
+        <h2 class="section__title" id="detail-similar-title">Similar Vibe</h2>
+        <span class="section__subtitle">You might also like</span>
+      </div>
+      <div class="rail__track" id="detail-similar"></div>
+    </section>
+
+    <!-- TV only -->
+    <section class="section" aria-labelledby="detail-seasons-title" id="detail-seasons-section" hidden>
+      <div class="section__head" style="padding: 0">
+        <h2 class="section__title" id="detail-seasons-title">Episodes</h2>
+      </div>
+      <div class="season-select" id="detail-season-select"></div>
+      <div id="detail-episodes"></div>
+    </section>
+
+    <section class="section" aria-labelledby="detail-watch-title" id="detail-watch-section">
+      <div class="section__head" style="padding: 0">
+        <h2 class="section__title" id="detail-watch-title">Where to Watch</h2>
+      </div>
+      <div id="detail-watch-body"></div>
+    </section>
+  </div>
+</div>

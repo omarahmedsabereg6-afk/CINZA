@@ -1,0 +1,16 @@
+<!-- WATCHLIST (section 19) -->
+<div class="view__pad">
+  <div class="section__head" style="padding: 0; margin-bottom: 4px">
+    <h1 class="t-title">Watchlist</h1>
+    <button class="btn btn--ghost btn--sm" id="watchlist-clear" type="button">Clear</button>
+  </div>
+  <p class="t-meta" id="watchlist-subtitle" style="margin-bottom: 12px"></p>
+
+  <div class="segment" id="watchlist-filter" role="tablist" aria-label="Filter watchlist" style="margin-bottom: 16px">
+    <button class="segment__item" role="tab" data-filter="all" aria-selected="true">All</button>
+    <button class="segment__item" role="tab" data-filter="movie" aria-selected="false">Movies</button>
+    <button class="segment__item" role="tab" data-filter="tv" aria-selected="false">Series</button>
+  </div>
+
+  <div id="watchlist-body"></div>
+</div>

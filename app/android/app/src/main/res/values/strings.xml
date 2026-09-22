@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">CINZA</string>
+    <string name="title_activity_main">CINZA</string>
+    <string name="package_name">app.cinza.mobile</string>
+    <string name="custom_url_scheme">app.cinza.mobile</string>
+</resources>

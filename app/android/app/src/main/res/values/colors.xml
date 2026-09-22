@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    CINZA palette, mirrored from app/css/tokens.css.
+
+    These exist so the NATIVE surfaces match the web layer: without them the
+    window background and status bar flash white for a frame before the webview
+    paints, which makes a dark app feel cheap on launch.
+-->
+<resources>
+    <color name="colorPrimary">#08090B</color>
+    <color name="colorPrimaryDark">#08090B</color>
+    <color name="colorAccent">#C8342B</color>
+
+    <!-- Window background: near-black, so there is no white flash at launch. -->
+    <color name="cinzaBackground">#08090B</color>
+    <!-- Splash artwork background. -->
+    <color name="cinzaSplashBackground">#08090B</color>
+</resources>

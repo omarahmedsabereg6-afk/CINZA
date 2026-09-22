@@ -1,0 +1,41 @@
+{
+  "name": "cinza",
+  "version": "1.0.0",
+  "private": true,
+  "description": "CINZA - identify movies and TV series from a scene. Capacitor (HTML/CSS/vanilla JS) + Node/Express + PostgreSQL/Prisma.",
+  "workspaces": [
+    "app",
+    "backend"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "postinstall": "node tools/gen-dev-schema.mjs",
+    "build": "npm --workspace app run build",
+    "dev": "concurrently -n api,app -c magenta,cyan \"npm:dev:api\" \"npm:dev:app\"",
+    "dev:api": "npm --workspace backend run dev",
+    "dev:app": "npm --workspace app run dev",
+    "start": "npm --workspace backend run start",
+    "db:generate": "prisma generate --schema prisma/schema.prisma",
+    "db:dev:generate": "prisma generate --schema prisma/schema.dev.prisma",
+    "db:dev:push": "prisma db push --schema prisma/schema.dev.prisma",
+    "db:dev:reset": "node tools/db-reset.mjs",
+    "db:migrate": "prisma migrate deploy --schema prisma/schema.prisma",
+    "db:migrate:dev": "prisma migrate dev --schema prisma/schema.prisma",
+    "db:studio": "prisma studio --schema prisma/schema.prisma",
+    "test:api": "node --test tests/*.test.js && node tools/api-smoke.mjs",
+    "cap:sync": "npm --workspace app run cap:sync",
+    "cap:add:android": "npm --workspace app run cap:add:android",
+    "cap:add:ios": "npm --workspace app run cap:add:ios",
+    "cap:open:android": "npm --workspace app run cap:open:android",
+    "cap:open:ios": "npm --workspace app run cap:open:ios",
+    "android:build:debug": "npm --workspace app run android:build:debug",
+    "android:build:release": "npm --workspace app run android:build:release",
+    "ios:build": "npm --workspace app run ios:build"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2",
+    "prisma": "^6.2.1"
+  }
+}

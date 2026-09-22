@@ -1,0 +1,35 @@
+<!-- ABOUT / developer info. Deliberately shows the real runtime state, including
+     which providers are mock, so there is never any doubt about what is running. -->
+<div class="view__pad">
+  <h1 class="t-title" style="margin-bottom: 4px">About</h1>
+  <p class="t-meta" id="about-version"></p>
+
+  <section class="section">
+    <h2 class="section__title" style="margin-bottom: 8px">What CINZA does</h2>
+    <p class="about-text">
+      Point your camera at a paused film, a poster, or a screenshot on another screen. CINZA reads the scene, searches
+      the movie database, verifies the candidates against each other, and shows you the title with an honest confidence
+      score.
+    </p>
+    <p class="about-text">
+      It is not a worldwide frame database. Timestamps are only shown when they can actually be established, and when
+      they cannot, the app says so instead of guessing.
+    </p>
+  </section>
+
+  <div id="about-runtime"></div>
+
+  <section class="section">
+    <h2 class="section__title" style="margin-bottom: 8px">Privacy</h2>
+    <p class="about-text">
+      Uploaded images are processed in memory and never written to disk. Only a small preview thumbnail and
+      non-reversible perceptual hashes are kept, and they are deleted together with the history entry.
+    </p>
+    <p class="about-text">
+      Recognition works without an account. Anonymous recognitions stay on this device and cannot be read through the
+      API.
+    </p>
+  </section>
+
+  <div id="about-actions" style="margin-top: 24px"></div>
+</div>
